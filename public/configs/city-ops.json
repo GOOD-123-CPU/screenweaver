@@ -1,0 +1,84 @@
+{
+  "width": 1920,
+  "height": 1080,
+  "theme": "midnight",
+  "header": {
+    "title": "城市运行监测指挥中心",
+    "subtitle": "CITY OPERATIONS MONITORING · 演示数据，均为虚构",
+    "clock": true
+  },
+  "layout": [
+    { "i": "f1", "x": 0, "y": 0, "w": 3, "h": 2 },
+    { "i": "f2", "x": 3, "y": 0, "w": 3, "h": 2 },
+    { "i": "f3", "x": 6, "y": 0, "w": 3, "h": 2 },
+    { "i": "f4", "x": 9, "y": 0, "w": 3, "h": 2 },
+    { "i": "c5", "x": 0, "y": 2, "w": 5, "h": 4 },
+    { "i": "ch5", "x": 0, "y": 2, "w": 5, "h": 4 },
+    { "i": "c6", "x": 5, "y": 2, "w": 4, "h": 4 },
+    { "i": "ch6", "x": 5, "y": 2, "w": 4, "h": 4 },
+    { "i": "c7", "x": 9, "y": 2, "w": 3, "h": 4 },
+    { "i": "cp7", "x": 9, "y": 2, "w": 3, "h": 4 },
+    { "i": "mq", "x": 0, "y": 6, "w": 12, "h": 1 },
+    { "i": "c8", "x": 0, "y": 7, "w": 5, "h": 5 },
+    { "i": "ch8", "x": 0, "y": 7, "w": 5, "h": 5 },
+    { "i": "c9", "x": 5, "y": 7, "w": 4, "h": 5 },
+    { "i": "ch9", "x": 5, "y": 7, "w": 4, "h": 5 },
+    { "i": "c10", "x": 9, "y": 7, "w": 3, "h": 5 },
+    { "i": "ch10", "x": 9, "y": 7, "w": 3, "h": 5 }
+  ],
+  "components": [
+    { "id": "f1", "type": "DigitalFlop", "props": { "source": "kpi1" } },
+    { "id": "f2", "type": "DigitalFlop", "props": { "source": "kpi2" } },
+    { "id": "f3", "type": "DigitalFlop", "props": { "source": "kpi3" } },
+    { "id": "f4", "type": "DigitalFlop", "props": { "source": "kpi4" } },
+    { "id": "c5", "type": "PanelBox", "props": { "title": "24 小时城市运行指数" } },
+    { "id": "ch5", "type": "ChartBox", "props": { "chart": "mixed", "source": "flow" } },
+    { "id": "c6", "type": "PanelBox", "props": { "title": "重点领域办结率" } },
+    { "id": "ch6", "type": "ProgressGroup", "props": { "source": "kpiRate" } },
+    { "id": "c7", "type": "PanelBox", "props": { "title": "运行态势" } },
+    { "id": "cp7", "type": "DecorCompass", "props": { "size": 110 } },
+    { "id": "mq", "type": "MarqueeBar", "props": { "source": "news", "speed": 46 } },
+    { "id": "c8", "type": "PanelBox", "props": { "title": "实时事项流水" } },
+    { "id": "ch8", "type": "ScrollTable", "props": { "source": "todo" } },
+    { "id": "c9", "type": "PanelBox", "props": { "title": "市民诉求来源构成" } },
+    { "id": "ch9", "type": "ChartBox", "props": { "chart": "sunburst", "source": "channel" } },
+    { "id": "c10", "type": "PanelBox", "props": { "title": "区域办理排行" } },
+    { "id": "ch10", "type": "RankList", "props": { "source": "rank" } }
+  ],
+  "sources": {
+    "kpi1": { "type": "mock", "generator": "metrics", "params": { "items": 1 }, "interval": 8000 },
+    "kpi2": { "type": "mock", "generator": "metrics", "params": { "items": 1 }, "interval": 8000 },
+    "kpi3": { "type": "mock", "generator": "metrics", "params": { "items": 1 }, "interval": 8000 },
+    "kpi4": { "type": "mock", "generator": "metrics", "params": { "items": 1 }, "interval": 8000 },
+    "flow": { "type": "mock", "generator": "dualTrend", "params": { "points": 12, "labels": "hours" }, "interval": 10000 },
+    "kpiRate": {
+      "type": "mock",
+      "generator": "progress",
+      "params": {
+        "items": [
+          { "name": "交通调度", "target": 90 },
+          { "name": "环境治理", "target": 85 },
+          { "name": "市政维护", "target": 80 },
+          { "name": "公共安全", "target": 95 },
+          { "name": "民生服务", "target": 88 }
+        ]
+      },
+      "interval": 9000
+    },
+    "news": {
+      "type": "static",
+      "data": {
+        "items": [
+          "演示数据公告：本屏所有数值均为引擎随机生成的虚构数据",
+          "指挥调度：各区域联动响应正常，处置流程有序推进",
+          "系统播报：数据源轮询与组件刷新策略运行稳定",
+          "温馨提示：接入真实数据只需将 mock 数据源替换为 http 数据源"
+        ]
+      }
+    },
+    "todo": { "type": "mock", "generator": "table", "params": { "rows": 10 }, "interval": 15000 },
+    "channel": { "type": "mock", "generator": "sunburst", "params": { "groups": 4 }, "interval": 12000 },
+    "rank": { "type": "mock", "generator": "ranking", "params": { "rows": 6, "unit": "件" }, "interval": 12000 }
+  },
+  "refreshInterval": 8000
+}

@@ -1,0 +1,46 @@
+{
+  "width": 1920,
+  "height": 1080,
+  "theme": "aurora",
+  "header": {
+    "title": "能源物联网监测平台",
+    "subtitle": "ENERGY IOT MONITORING · 演示数据，均为虚构",
+    "clock": true
+  },
+  "layout": [
+    { "i": "f1", "x": 0, "y": 0, "w": 3, "h": 2 },
+    { "i": "f2", "x": 3, "y": 0, "w": 6, "h": 2 },
+    { "i": "f3", "x": 9, "y": 0, "w": 3, "h": 2 },
+    { "i": "c4", "x": 0, "y": 2, "w": 5, "h": 4 },
+    { "i": "ch4", "x": 0, "y": 2, "w": 5, "h": 4 },
+    { "i": "c5", "x": 5, "y": 2, "w": 7, "h": 4 },
+    { "i": "ch5", "x": 5, "y": 2, "w": 7, "h": 4 },
+    { "i": "c6", "x": 0, "y": 6, "w": 8, "h": 6 },
+    { "i": "ch6", "x": 0, "y": 6, "w": 8, "h": 6 },
+    { "i": "c7", "x": 8, "y": 6, "w": 4, "h": 6 },
+    { "i": "ch7", "x": 8, "y": 6, "w": 4, "h": 6 }
+  ],
+  "components": [
+    { "id": "f1", "type": "DigitalFlop", "props": { "source": "kpi1" } },
+    { "id": "f2", "type": "DigitalFlop", "props": { "source": "kpi2" } },
+    { "id": "f3", "type": "DigitalFlop", "props": { "source": "kpi3" } },
+    { "id": "c4", "type": "PanelBox", "props": { "title": "核心站点负载率" } },
+    { "id": "ch4", "type": "GaugeCluster", "props": { "source": "gauges" } },
+    { "id": "c5", "type": "PanelBox", "props": { "title": "24 小时负荷曲线" } },
+    { "id": "ch5", "type": "ChartBox", "props": { "chart": "line", "source": "load" } },
+    { "id": "c6", "type": "PanelBox", "props": { "title": "设备状态矩阵" } },
+    { "id": "ch6", "type": "StatusGrid", "props": { "source": "devices" } },
+    { "id": "c7", "type": "PanelBox", "props": { "title": "能耗流转" } },
+    { "id": "ch7", "type": "ChartBox", "props": { "chart": "sankey", "source": "energy" } }
+  ],
+  "sources": {
+    "kpi1": { "type": "mock", "generator": "metrics", "params": { "items": 1 }, "interval": 9000 },
+    "kpi2": { "type": "mock", "generator": "metrics", "params": { "items": 4 }, "interval": 9000 },
+    "kpi3": { "type": "mock", "generator": "metrics", "params": { "items": 1 }, "interval": 9000 },
+    "gauges": { "type": "mock", "generator": "gauges", "params": { "items": 4 }, "interval": 7000 },
+    "load": { "type": "mock", "generator": "trend", "params": { "points": 24, "labels": "hours", "base": 400, "variance": 120 }, "interval": 9000 },
+    "devices": { "type": "mock", "generator": "statusGrid", "params": { "rows": 5, "cols": 8, "prefix": "站点" }, "interval": 10000 },
+    "energy": { "type": "mock", "generator": "sankey", "interval": 15000 }
+  },
+  "refreshInterval": 8000
+}

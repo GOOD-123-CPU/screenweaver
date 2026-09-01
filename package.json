@@ -1,0 +1,43 @@
+{
+  "name": "screenweaver",
+  "version": "1.0.0",
+  "description": "Config-driven big-screen data visualization engine. Describe a dashboard in JSON, ScreenWeaver renders it.",
+  "keywords": [
+    "dashboard",
+    "big-screen",
+    "data-visualization",
+    "echarts",
+    "vue3",
+    "config-driven",
+    "datav",
+    "iot",
+    "monitoring"
+  ],
+  "license": "MIT",
+  "author": "screenweaver contributors",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GOOD-123-CPU/screenweaver.git"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "build:lib": "vite build --config vite.lib.config.ts",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check:configs": "node scripts/validate-configs.mjs"
+  },
+  "dependencies": {
+    "echarts": "^5.5.1",
+    "vue": "^3.5.12"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.0",
+    "typescript": "~5.6.3",
+    "vite": "^5.4.11",
+    "vitest": "^4.1.11",
+    "vue-tsc": "^2.1.10"
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "width": 1920,
+  "height": 1080,
+  "theme": "ember",
+  "header": {
+    "title": "销售运营数据中心",
+    "subtitle": "SALES OPERATIONS DASHBOARD · 演示数据，均为虚构",
+    "clock": true
+  },
+  "layout": [
+    { "i": "mq", "x": 0, "y": 0, "w": 12, "h": 1 },
+    { "i": "f1", "x": 0, "y": 1, "w": 12, "h": 2 },
+    { "i": "c2", "x": 0, "y": 3, "w": 7, "h": 4 },
+    { "i": "ch2", "x": 0, "y": 3, "w": 7, "h": 4 },
+    { "i": "c3", "x": 7, "y": 3, "w": 5, "h": 4 },
+    { "i": "ch3", "x": 7, "y": 3, "w": 5, "h": 4 },
+    { "i": "c4", "x": 0, "y": 7, "w": 4, "h": 5 },
+    { "i": "ch4", "x": 0, "y": 7, "w": 4, "h": 5 },
+    { "i": "c5", "x": 4, "y": 7, "w": 4, "h": 5 },
+    { "i": "ch5", "x": 4, "y": 7, "w": 4, "h": 5 },
+    { "i": "c6", "x": 8, "y": 7, "w": 4, "h": 5 },
+    { "i": "ch6", "x": 8, "y": 7, "w": 4, "h": 5 }
+  ],
+  "components": [
+    { "id": "mq", "type": "MarqueeBar", "props": { "source": "news", "speed": 50 } },
+    { "id": "f1", "type": "DigitalFlop", "props": { "source": "kpi" } },
+    { "id": "c2", "type": "PanelBox", "props": { "title": "月度销售额与目标达成" } },
+    { "id": "ch2", "type": "ChartBox", "props": { "chart": "mixed", "source": "monthly" } },
+    { "id": "c3", "type": "PanelBox", "props": { "title": "销售转化漏斗" } },
+    { "id": "ch3", "type": "ChartBox", "props": { "chart": "funnel", "source": "funnel" } },
+    { "id": "c4", "type": "PanelBox", "props": { "title": "团队能力评估" } },
+    { "id": "ch4", "type": "ChartBox", "props": { "chart": "radar", "source": "radar" } },
+    { "id": "c5", "type": "PanelBox", "props": { "title": "业务结构占比" } },
+    { "id": "ch5", "type": "ChartBox", "props": { "chart": "pie", "source": "channel" } },
+    { "id": "c6", "type": "PanelBox", "props": { "title": "区域销售排行" } },
+    { "id": "ch6", "type": "RankList", "props": { "source": "rank" } }
+  ],
+  "sources": {
+    "news": {
+      "type": "static",
+      "data": {
+        "items": [
+          "演示数据公告：本屏所有数值均为引擎随机生成的虚构数据",
+          "运营播报：本月整体目标达成进度符合预期节奏",
+          "团队动态：各区域排行榜每 12 秒刷新一次",
+          "小贴士：在 overrides 中可精调任意 ECharts 配置项"
+        ]
+      }
+    },
+    "kpi": { "type": "mock", "generator": "metrics", "params": { "items": 4 }, "interval": 8000 },
+    "monthly": { "type": "mock", "generator": "dualTrend", "params": { "points": 12 }, "interval": 10000 },
+    "funnel": { "type": "mock", "generator": "funnel", "params": { "stages": 5 }, "interval": 12000 },
+    "radar": { "type": "mock", "generator": "trend", "params": { "points": 5, "base": 60, "variance": 35 }, "interval": 20000 },
+    "channel": { "type": "mock", "generator": "share", "params": { "items": 6, "names": ["直销", "渠道", "电商", "KA", "海外", "其他"] }, "interval": 12000 },
+    "rank": { "type": "mock", "generator": "ranking", "params": { "rows": 7, "unit": "万" }, "interval": 12000 }
+  },
+  "refreshInterval": 8000
+}
