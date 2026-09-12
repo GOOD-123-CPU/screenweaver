@@ -8,7 +8,7 @@
 [![Vue 3](https://img.shields.io/badge/Vue-3.x-42b883.svg)](https://vuejs.org/)
 [![ECharts 5](https://img.shields.io/badge/ECharts-5.x-aa344d.svg)](https://echarts.apache.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.x-646cff.svg)](https://vitejs.dev/)
-[![CI](https://img.shields.io/badge/CI-GitHub_Actions-2088ff.svg)](.github/workflows/ci.yml)
+[![CI](https://github.com/GOOD-123-CPU/screenweaver/actions/workflows/ci.yml/badge.svg)](https://github.com/GOOD-123-CPU/screenweaver/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/badge/tests-vitest-6e9f18.svg)](tests/engine.spec.ts)
 
 </div>
@@ -28,9 +28,28 @@ ScreenWeaver 把大屏开发从「复制粘贴改 HTML」变成「写一份 JSON
 - **组件可扩展** —— 注册表模式，`registerComponent('MyWidget', MyWidget)` 即可插入自定义 Vue 组件
 - **质量保障** —— Vitest 单测覆盖引擎纯函数、CI 全流程（校验→测试→构建→库构建）
 
-> 本项目代码 100% 原创，示例数据全部为运行时随机生成的**虚构演示数据**，与任何真实主体无关。
+> 示例包含运行时生成的模拟数值和静态演示文本，均为**虚构演示数据**，不代表真实业务指标。
+
+## 数据科学项目中的用途
+
+用于把分析结果组织为可交互的数据看板：配置定义展示结构，数据源提供指标与序列，组件负责渲染。可从 [城市运行示例配置](./public/configs/city-ops.json) 查看一份完整案例，再结合 [数据接入指南](./docs/data-integration.md) 替换为自己的分析输出。
+
+仓库中的示例展示可视化与数据接入能力；统计建模、指标计算和数据质量校验需要在上游分析流程中完成。
 
 ## 快速开始
+
+使用 Node.js 22，与仓库 CI 环境保持一致。首次运行：
+
+```bash
+git clone https://github.com/GOOD-123-CPU/screenweaver.git
+cd screenweaver
+npm ci
+npm run dev
+```
+
+打开终端输出的地址，默认路径为 `http://localhost:5188/screenweaver/`。端口被占用时，以终端输出为准。
+
+其他命令：
 
 ```bash
 npm install
@@ -45,9 +64,9 @@ npm run preview        # 预览构建产物
 打开首页选择示例大屏，或直接访问：
 
 ```
-http://localhost:5188/?screen=city-ops      # 城市运行监测（墨夜主题）
-http://localhost:5188/?screen=sales-board   # 销售运营看板（烬火主题）
-http://localhost:5188/?screen=energy-iot    # 能源物联网监测（极光主题）
+http://localhost:5188/screenweaver/?screen=city-ops      # 城市运行监测（墨夜主题）
+http://localhost:5188/screenweaver/?screen=sales-board   # 销售运营看板（烬火主题）
+http://localhost:5188/screenweaver/?screen=energy-iot    # 能源物联网监测（极光主题）
 ```
 
 ## 一份配置长什么样
