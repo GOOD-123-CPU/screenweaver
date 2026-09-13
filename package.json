@@ -30,7 +30,7 @@
     "check:configs": "node scripts/validate-configs.mjs"
   },
   "dependencies": {
-    "echarts": "^5.5.1",
+    "echarts": "^6.1.0",
     "vue": "^3.5.12"
   },
   "devDependencies": {
