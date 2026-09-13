@@ -13,6 +13,12 @@
 
 </div>
 
+## 在线演示
+
+[打开 ScreenWeaver](https://good-123-cpu.github.io/screenweaver/) · [城市运行](https://good-123-cpu.github.io/screenweaver/?screen=city-ops) · [销售运营](https://good-123-cpu.github.io/screenweaver/?screen=sales-board) · [能源物联网](https://good-123-cpu.github.io/screenweaver/?screen=energy-iot)
+
+演示使用虚构数据，无需配置后端。接入自己的指标可参考 [数据接入指南](./docs/data-integration.md)。
+
 ## 这是什么
 
 ScreenWeaver 把大屏开发从「复制粘贴改 HTML」变成「写一份 JSON」：
