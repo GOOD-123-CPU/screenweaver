@@ -4,6 +4,18 @@
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [Unreleased]
+
+### 修复
+
+- HTTP 数据源现在检查非 2xx 响应，不再把错误响应当作有效业务数据
+- 慢接口轮询时若上一请求仍在执行，会跳过本轮，避免请求堆积
+- 组件卸载时通过 `AbortController` 取消在途 HTTP 请求
+
+### 测试
+
+- 增加 HTTP 状态码、headers 与 path 提取测试；CI 已验证通过
+
 ## [1.0.0] - 2026-09-01
 
 ### 新增
@@ -52,6 +64,6 @@
 - 三套示例大屏：城市运行监测、销售运营看板、能源物联网监测（全部虚构演示数据）
 - 大屏选择页与 `?screen=` 直达参数
 
-[1.0.0]: https://github.com/YOUR_NAME/screenweaver/releases/tag/v1.0.0
-[0.2.0]: https://github.com/YOUR_NAME/screenweaver/releases/tag/v0.2.0
-[0.1.0]: https://github.com/YOUR_NAME/screenweaver/releases/tag/v0.1.0
+[1.0.0]: https://github.com/GOOD-123-CPU/screenweaver/releases/tag/v1.0.0
+[0.2.0]: https://github.com/GOOD-123-CPU/screenweaver/releases/tag/v0.2.0
+[0.1.0]: https://github.com/GOOD-123-CPU/screenweaver/releases/tag/v0.1.0
