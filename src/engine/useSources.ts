@@ -46,7 +46,40 @@ export async function fetchHttpPayload(
   src: Extract<SourceDecl, { type: 'http' }>,
   signal?: AbortSignal,
 ): Promise<unknown> {
-  const res = await fetch(src.url, { headers: src.headers, signal })
+  const timeoutMs = src.timeout ?? 15_000
+  const controller = new AbortController()
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined
+  let timedOut = false
+
+  const abortFromCaller = () => controller.abort()
+  if (signal) {
+    if (signal.aborted) {
+      controller.abort()
+    } else {
+      signal.addEventListener('abort', abortFromCaller, { once: true })
+    }
+  }
+
+  if (timeoutMs > 0 && !controller.signal.aborted) {
+    timeoutHandle = setTimeout(() => {
+      timedOut = true
+      controller.abort()
+    }, timeoutMs)
+  }
+
+  let res: Response
+  try {
+    res = await fetch(src.url, { headers: src.headers, signal: controller.signal })
+  } catch (error) {
+    if (timedOut && !signal?.aborted) {
+      throw new Error(`HTTP request timed out after ${timeoutMs}ms`, { cause: error })
+    }
+    throw error
+  } finally {
+    if (timeoutHandle) clearTimeout(timeoutHandle)
+    signal?.removeEventListener('abort', abortFromCaller)
+  }
+
   if (!res.ok) {
     throw new Error(`HTTP ${res.status} ${res.statusText || 'request failed'}`)
   }
