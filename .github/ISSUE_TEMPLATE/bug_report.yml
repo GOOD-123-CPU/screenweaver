@@ -1,0 +1,65 @@
+name: "🐛 Bug report"
+description: Report a reproducible ScreenWeaver defect
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Problem summary
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Data source type
+      options:
+        - static
+        - mock
+        - HTTP polling
+        - WebSocket
+        - Not source-related
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Use config ...
+        2. Start ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Minimal sanitized configuration
+      description: Remove internal URLs, credentials, tokens, and private data.
+      render: yaml
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, Node version, OS, and deployment mode.
+      render: shell
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs / screenshots
+      description: Add sanitized logs or screenshots if useful.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission checks
+      options:
+        - label: I searched existing issues first.
+          required: true
+        - label: I removed secrets and private endpoints/data.
+          required: true
