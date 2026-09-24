@@ -38,6 +38,8 @@ export interface PollingSource {
   interval?: number
   /** 可选的取值路径，如 "data.list" */
   path?: string
+  /** 单次请求超时毫秒，默认 15000；0 表示不设置超时 */
+  timeout?: number
   headers?: Record<string, string>
 }
 
