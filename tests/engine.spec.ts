@@ -2,9 +2,9 @@
  * 引擎纯函数单元测试：
  * deepMerge / extractPath / validateSchema / runMock / 注册表。
  */
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { deepMerge } from '../src/engine/chartPresets'
-import { extractPath } from '../src/engine/useSources'
+import { extractPath, fetchHttpPayload } from '../src/engine/useSources'
 import { validateSchema } from '../src/engine/validate'
 import { runMock } from '../src/engine/mock'
 import { registry, registerBuiltinComponents } from '../src/engine/registry'
@@ -59,6 +59,47 @@ describe('extractPath', () => {
 
   it('空路径返回原值', () => {
     expect(extractPath(data, '')).toBe(data)
+  })
+})
+
+// ---------- fetchHttpPayload ----------
+describe('fetchHttpPayload', () => {
+  it('检查 HTTP 状态并按 path 提取 payload', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: async () => ({ data: { list: [1, 2, 3] } }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const payload = await fetchHttpPayload({
+      type: 'http',
+      url: 'https://example.com/data',
+      headers: { Authorization: 'Bearer test' },
+      path: 'data.list',
+    })
+
+    expect(payload).toEqual([1, 2, 3])
+    expect(fetchMock).toHaveBeenCalledOnce()
+    expect(fetchMock.mock.calls[0][1].headers).toEqual({ Authorization: 'Bearer test' })
+    vi.unstubAllGlobals()
+  })
+
+  it('非 2xx 响应应拒绝而不是写入错误 payload', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 503,
+      statusText: 'Service Unavailable',
+      json: async () => ({ message: 'temporary failure' }),
+    }))
+
+    await expect(fetchHttpPayload({
+      type: 'http',
+      url: 'https://example.com/data',
+    })).rejects.toThrow('HTTP 503')
+
+    vi.unstubAllGlobals()
   })
 })
 
