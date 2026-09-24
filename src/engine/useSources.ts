@@ -1,6 +1,6 @@
 /**
  * 数据源管理：把 schema.sources 声明解析成响应式数据流。
- * 支持 static / http(轮询) / mock(内置模拟器) 三种，组件通过 key 订阅。
+ * 支持 static / http(轮询) / mock / websocket，组件通过 key 订阅。
  */
 import { reactive, onBeforeUnmount } from 'vue'
 import type { ScreenSchema, SourceDecl } from './schema'
@@ -36,22 +36,52 @@ export function extractPath(payload: unknown, path: string): unknown {
   return cur
 }
 
+/**
+ * 执行一次 HTTP 数据源请求。
+ * - 非 2xx 状态视为失败，不把错误页/错误 JSON 写入数据源；
+ * - 支持 AbortSignal，便于组件卸载时取消未完成请求；
+ * - path 提取与 WebSocket 数据源保持一致。
+ */
+export async function fetchHttpPayload(
+  src: Extract<SourceDecl, { type: 'http' }>,
+  signal?: AbortSignal,
+): Promise<unknown> {
+  const res = await fetch(src.url, { headers: src.headers, signal })
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status} ${res.statusText || 'request failed'}`)
+  }
+
+  let payload: unknown = await res.json()
+  if (src.path) payload = extractPath(payload, src.path)
+  return payload
+}
+
 export function useSources(schema: ScreenSchema) {
   const store = reactive<Record<string, DataSource>>({})
   const timers: Timer[] = []
+  const httpControllers = new Map<string, AbortController>()
 
   function set(key: string, data: unknown) {
     store[key] = { data, updatedAt: Date.now() }
   }
 
   async function fetchOne(key: string, src: Extract<SourceDecl, { type: 'http' }>) {
+    // 上一轮请求仍未完成时跳过本轮，避免慢接口造成轮询请求堆积。
+    if (httpControllers.has(key)) return
+
+    const controller = new AbortController()
+    httpControllers.set(key, controller)
+
     try {
-      const res = await fetch(src.url, { headers: src.headers })
-      let payload: unknown = await res.json()
-      if (src.path) payload = extractPath(payload, src.path)
+      const payload = await fetchHttpPayload(src, controller.signal)
       set(key, payload)
     } catch (e) {
+      if (controller.signal.aborted) return
       console.warn(`[screenweaver] source "${key}" fetch failed`, e)
+    } finally {
+      if (httpControllers.get(key) === controller) {
+        httpControllers.delete(key)
+      }
     }
   }
 
@@ -68,7 +98,7 @@ export function useSources(schema: ScreenSchema) {
       if (closed) return
       try {
         ws = new WebSocket(src.url)
-      } catch (e) {
+      } catch {
         scheduleReconnect()
         return
       }
@@ -123,7 +153,7 @@ export function useSources(schema: ScreenSchema) {
         void fetchOne(key, src)
         const ms = src.interval ?? schema.refreshInterval ?? 5000
         if (ms > 0) {
-          timers.push(setInterval(() => fetchOne(key, src), ms))
+          timers.push(setInterval(() => void fetchOne(key, src), ms))
         }
         break
       }
@@ -140,6 +170,8 @@ export function useSources(schema: ScreenSchema) {
 
   onBeforeUnmount(() => {
     timers.forEach(clearInterval)
+    httpControllers.forEach((controller) => controller.abort())
+    httpControllers.clear()
     sockets.forEach((s) => s.close())
   })
 
