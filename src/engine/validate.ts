@@ -157,6 +157,9 @@ export function validateSchema(data: unknown): ValidationResult {
         if (type === 'http' && src.interval != null) {
           checkRange(issues, `${p}.interval`, src.interval, 0, 86_400_000)
         }
+        if (type === 'http' && src.timeout != null) {
+          checkRange(issues, `${p}.timeout`, src.timeout, 0, 120_000)
+        }
       } else if (type === 'mock') {
         if (typeof src.generator !== 'string' || !src.generator) {
           issues.push({ path: `${p}.generator`, message: 'mock 数据源必须指定 generator 名称' })
