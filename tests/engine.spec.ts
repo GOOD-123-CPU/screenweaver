@@ -86,6 +86,34 @@ describe('fetchHttpPayload', () => {
     vi.unstubAllGlobals()
   })
 
+  it('请求超过 source timeout 时应主动中止', async () => {
+    vi.useFakeTimers()
+    const fetchMock = vi.fn().mockImplementation((_url: string, init?: RequestInit) => {
+      return new Promise((_resolve, reject) => {
+        const requestSignal = init?.signal as AbortSignal
+        requestSignal.addEventListener(
+          'abort',
+          () => reject(new DOMException('Aborted', 'AbortError')),
+          { once: true },
+        )
+      })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    const rejection = expect(fetchHttpPayload({
+      type: 'http',
+      url: 'https://example.com/slow',
+      timeout: 50,
+    })).rejects.toThrow('HTTP request timed out after 50ms')
+
+    await vi.advanceTimersByTimeAsync(51)
+    await rejection
+    expect((fetchMock.mock.calls[0][1].signal as AbortSignal).aborted).toBe(true)
+
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
+
   it('非 2xx 响应应拒绝而不是写入错误 payload', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
       ok: false,
@@ -170,6 +198,15 @@ describe('validateSchema', () => {
       sources: { s: { type: 'http', url: 'ftp://x' } },
     })
     expect(r.issues.some((i) => i.path === 'sources.s.url')).toBe(true)
+  })
+
+  it('http timeout 必须在允许范围内', () => {
+    const r = validateSchema({
+      ...valid,
+      sources: { s: { type: 'http', url: 'https://example.com/data', timeout: -1 } },
+    })
+    expect(r.ok).toBe(false)
+    expect(r.issues.some((i) => i.path === 'sources.s.timeout')).toBe(true)
   })
 
   it('ws 数据源合法', () => {
