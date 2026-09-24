@@ -72,7 +72,7 @@ export async function fetchHttpPayload(
     res = await fetch(src.url, { headers: src.headers, signal: controller.signal })
   } catch (error) {
     if (timedOut && !signal?.aborted) {
-      throw new Error(`HTTP request timed out after ${timeoutMs}ms`, { cause: error })
+      throw new Error(`HTTP request timed out after ${timeoutMs}ms`)
     }
     throw error
   } finally {
